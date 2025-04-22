@@ -1,0 +1,107 @@
+body {
+    font-family: 'Arial', sans-serif;  /* Font family */
+    color: #333333;  /* Font color */
+    background-color: #f4f4f4;  /* Light background color */
+    margin: 0;
+    padding: 0;
+}
+
+/* Header styling */
+.header {
+    background-color: #4CAF50;  /* Green background */
+    padding: 20px;
+    text-align: center;
+    color: #ffffff; /* Ensure all text in header is white by default */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: slight shadow for depth */
+}
+
+/* Title inside header */
+.main-title {
+    font-family: 'Helvetica', sans-serif;
+    font-size: 2.5em;  /* Larger text for visibility */
+    color: #ffffff;
+    margin: 0;
+}
+
+/* Content div styling */
+.content {
+    padding: 20px;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 1200px;
+}
+
+/* Description styling */
+.description {
+    font-size: 1.2em;
+    color: #555555;  /* Darker gray color for text */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Footer styling */
+.footer {
+    background-color: #333333;  /* Dark background for footer */
+    color: #ffffff;  /* White text */
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Footer text styling */
+.footer-text {
+    margin: 0;
+    font-size: 0.8em;
+}
+
+/* Tableau Embed styling */
+.tableauPlaceholder {
+    width: 100%;
+    height: 800px;
+    background-color: #ffffff;  /* White background for the tableau container */
+}
+
+/* Anchor Tag Styling */
+a {
+    text-decoration: none;  /* Removes underline */
+    color: #4CAF50;  /* Green link color */
+}
+
+a:hover {
+    color: #333333;  /* Darker color on hover */
+    text-decoration: underline;  /* Underline on hover */
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+    .content {
+        width: 100%;
+    }
+    .tableauPlaceholder {
+        height: 600px;  /* Adjust height for smaller screens */
+    }
+}
+/* What’s New:
+Anchor Tag Styles (a and a:hover) to handle link */
+
+/* Navigation links inside header */
+.nav-links {
+    margin-top: 10px;
+}
+
+.nav-links a {
+    margin: 0 15px;
+    color: #ffffff;  /* White text for links */
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+}
+
+
+.nav-links a:hover {
+    color: #d0ffd0;  /* Light green on hover for contrast */
+    text-decoration: underline;
+}
+

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Symbol Memory Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #111;
+      color: #eee;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 10px;
+    }
+    #stats {
+      margin-bottom: 15px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, 60px); /* Set back to 6 for a 6x6 grid */
+      grid-gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .tile {
+      background: #333;
+      border: 2px solid #666;
+      border-radius: 10px;
+      font-size: 28px;
+      cursor: pointer;
+      height: 60px;
+      width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+    .tile.revealed {
+      background: #555;
+    }
+    button {
+      background-color: #444;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔮 Symbol Memory Game</h1>
+  <div id="stats">
+    Lives: <span id="lives">∞</span> |
+    Streak: <span id="streak">0</span> |
+    Level: <span id="level">1</span> |
+    Score: <span id="score">0</span> |
+    Time: <span id="timer">120</span>s
+  </div>
+  <div class="grid" id="gameGrid"></div>
+  <button onclick="startGame()">Restart</button>
+
+  <script>
+    const symbols = ['★', '☀️', '❄️', '🌙', '💎', '⚡', '🍀', '🔥', '🍎', '🍕', '🎈', '🎮', '🎵', '📚', '🚀', '🌈', '🐱', '🐶', '🐵', '🐸', '🦄', '🐝', '🦋', '🐢', '🦊', '🐙', '🦖', '🐳', '🦀', '🐍', '🦂', '🦅', '🦉', '🦓', '🦘', '🐇', '🐿️', '🦔', '🪐', '🌋', '🎃', '🎁', '🎯', '🚁', '🚂', '✈️', '🛸', '🚤', '🛶', '🪄'];
+    let level = 1;
+    let gridSize = 6; // Set grid size to 6x6
+    let lives = Infinity; // Infinite lives
+    let streak = 0;
+    let selected = [];
+    let symbolMap = [];
+    let matched = [];
+    let score = 0;
+    let timer = 120; // Set timer to 2 minutes
+    let timerInterval;
+
+    function generatePairs(size) {
+      const total = size * size;
+      let pairSymbols = [];
+      for (let i = 0; i < total / 2; i++) {
+        const sym = symbols[i % symbols.length];
+        pairSymbols.push(sym, sym);
+      }
+      return pairSymbols.sort(() => Math.random() - 0.5);
+    }
+
+    function showSymbolsBriefly() {
+      const tiles = document.querySelectorAll('.tile');
+      tiles.forEach((tile, idx) => {
+        tile.textContent = symbolMap[idx];
+        tile.classList.add('revealed');
+      });
+      setTimeout(() => {
+        tiles.forEach((tile, idx) => {
+          if (!matched.includes(idx)) {
+            tile.textContent = '';
+            tile.classList.remove('revealed');
+          }
+        });
+      }, 1500);
+    }
+
+    function handleClick(idx) {
+      if (selected.length === 2 || matched.includes(idx)) return;
+      const tile = document.getElementById(`tile-${idx}`);
+      tile.textContent = symbolMap[idx];
+      tile.classList.add('revealed');
+      selected.push(idx);
+
+      if (selected.length === 2) {
+        const [a, b] = selected;
+        if (symbolMap[a] === symbolMap[b]) {
+          matched.push(a, b);
+          streak++;
+          score += 10 * level;
+          updateStats();
+          setTimeout(() => {
+            selected = [];
+            if (matched.length === symbolMap.length) levelUp();
+          }, 500);
+        } else {
+          streak = 0;
+          updateStats();
+          setTimeout(() => {
+            document.getElementById(`tile-${a}`).textContent = '';
+            document.getElementById(`tile-${b}`).textContent = '';
+            document.getElementById(`tile-${a}`).classList.remove('revealed');
+            document.getElementById(`tile-${b}`).classList.remove('revealed');
+            selected = [];
+          }, 800);
+        }
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('lives').textContent = lives === Infinity ? '∞' : lives; // Show '∞' for infinite lives
+      document.getElementById('streak').textContent = streak;
+      document.getElementById('level').textContent = level;
+      document.getElementById('score').textContent = score;
+    }
+
+    function levelUp() {
+      level++;
+      gridSize = 6; // Reset grid size to 6x6 after level up
+      matched = [];
+      streak = 0;
+      score += 50 * level;
+      timer = 120; // Reset timer to 2 minutes
+      startGame();
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timer--;
+        document.getElementById('timer').textContent = timer;
+        if (timer <= 0) {
+          clearInterval(timerInterval);
+          alert('Time\'s up! Game Over!');
+          startGame();
+        }
+      }, 1000);
+    }
+
+    function startGame() {
+      const grid = document.getElementById('gameGrid');
+      grid.innerHTML = '';
+      const total = gridSize * gridSize;
+      symbolMap = generatePairs(gridSize);
+      selected = [];
+      matched = [];
+      updateStats();
+      grid.style.gridTemplateColumns = `repeat(${gridSize}, 60px)`;
+      for (let i = 0; i < total; i++) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.id = `tile-${i}`;
+        tile.onclick = () => handleClick(i);
+        grid.appendChild(tile);
+      }
+      showSymbolsBriefly();
+      timer = 120; // Set timer to 2 minutes
+      document.getElementById('timer').textContent = timer;
+      startTimer();
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
+
